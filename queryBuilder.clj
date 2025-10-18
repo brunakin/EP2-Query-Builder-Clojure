@@ -7,20 +7,21 @@
 (defn filtros [query condicoes]
     (assoc query :filtros condicoes))
 
+
 (defn comp-sql [filtro]
-    (cond
-        (string? filtro) filtro
-        (:igual_a filtro)
+    (if (string? filtro)
+        filtro
+        (if (:igual_a filtro)
             (str (:campo filtro) " = \"" (:igual_a filtro) "\"")
-        (:maior_que filtro)
-            (str (:campo filtro) " > " (:maior_que filtro))
-        (:menor_que filtro)
-            (str (:campo filtro) " < " (:menor_que filtro))
-        (:em filtro)
-              (str (:campo filtro) " IN " (:em filtro))
-        (:valor filtro)
-              (str (:campo filtro) " = '" (:valor filtro) "'")
-        :else "Não tem nenhum comparador da lista")) 
+            (if (:maior_que filtro)
+                (str (:campo filtro) " > " (:maior_que filtro))
+                (if (:menor_que filtro)
+                    (str (:campo filtro) " < " (:menor_que filtro))
+                    (if (:em filtro)
+                        (str (:campo filtro) " IN " (:em filtro))
+                        (if (:valor filtro)
+                            (str (:campo filtro) " = '" (:valor filtro) "'")
+                              "Não tem nenhum comparador da lista")))))))
 
 
 ; Filtro para o E
@@ -75,3 +76,6 @@
 )
 
 (println (gerar-sql consulta))
+
+
+
